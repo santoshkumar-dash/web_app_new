@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101722">
+  <title>Weatherly — minimal & modern</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="weather-clear">
+  <main class="app">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Weatherly home">
+        <span class="brand-mark"><i class="fa-solid fa-cloud-sun"></i></span>
+        <span><b>weatherly</b><small>minimal & modern</small></span>
+      </a>
+      <div class="top-actions">
+        <button class="icon-btn" id="locateBtn" title="Use my location"><i class="fa-solid fa-location-crosshairs"></i></button>
+        <button class="icon-btn" id="unitToggle" title="Switch units">°C <span class="unit-divider">/</span> °F</button>
+        <button class="icon-btn" id="themeToggle" title="Toggle theme"><i class="fa-solid fa-sun"></i></button>
+      </div>
+    </header>
+
+    <!-- SEARCH ROW -->
+    <section class="search-row">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="searchInput" type="search" placeholder="Search city or location…" autocomplete="off" aria-label="Search city">
+        <button id="clearSearch" class="clear-btn" aria-label="Clear search">×</button>
+        <div class="suggestions" id="suggestions"></div>
+      </div>
+      <div class="updated"><span class="live-dot"></span><span id="lastUpdated">Live weather</span></div>
+    </section>
+
+    <div class="error" id="error" role="status"></div>
+    <div class="loading" id="loading"><span class="spinner"></span>Getting the latest forecast…</div>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard">
+      <!-- HERO -->
+      <section class="hero panel">
+        <div class="hero-top">
+          <div>
+            <div class="eyebrow"><i class="fa-solid fa-location-dot"></i> <span id="locationLabel">YOUR LOCATION</span></div>
+            <h1 id="cityName">Loading…</h1>
+            <p id="currentDate" class="muted">Getting local conditions</p>
+          </div>
+          <span class="live-pill"><span class="live-dot"></span> LIVE</span>
+        </div>
+        <div class="hero-weather">
+          <div>
+            <div class="temperature"><span id="temperature">--</span><sup id="tempUnit">°C</sup></div>
+            <p class="condition" id="condition">Checking the sky</p>
+            <p class="feels-line">Feels like <b id="feels">--°</b><span class="dot-sep">·</span><span id="dayRange">H: --°  L: --°</span></p>
+          </div>
+          <div class="hero-icon" id="weatherIcon"><i class="fa-solid fa-cloud-sun"></i></div>
+        </div>
+        <p class="weather-summary" id="weatherSummary">A clear look at the weather around you.</p>
+        <div class="sun-track">
+          <span><i class="fa-solid fa-sunrise"></i> Sunrise <b id="sunrise">--</b></span>
+          <div class="sun-line"><span id="sunProgress"></span></div>
+          <span><i class="fa-solid fa-sunset"></i> Sunset <b id="sunset">--</b></span>
+        </div>
+      </section>
+
+      <!-- HOURLY -->
+      <section class="hourly-panel panel">
+        <div class="section-head">
+          <div><span class="eyebrow">PLAN YOUR DAY</span><h2>Hourly forecast</h2></div>
+          <span class="subtle">Next 24h</span>
+        </div>
+        <div class="hourly-scroll" id="hourlyForecast"></div>
+      </section>
+
+      <!-- WEEKLY -->
+      <section class="weekly-panel panel">
+        <div class="section-head">
+          <div><span class="eyebrow">LOOK AHEAD</span><h2>7‑day forecast</h2></div>
+          <span class="subtle">Daily outlook</span>
+        </div>
+        <div class="daily-list" id="dailyForecast"></div>
+      </section>
+
+      <!-- METRICS -->
+      <section class="metrics-grid" aria-label="Weather details">
+        <article class="metric">
+          <div class="metric-head"><span>Feels like</span><i class="fa-solid fa-temperature-half"></i></div>
+          <strong id="feelsMetric">--°</strong>
+          <small id="feelsHint">Perceived temperature</small>
+        </article>
+        <article class="metric">
+          <div class="metric-head"><span>Humidity</span><i class="fa-solid fa-droplet"></i></div>
+          <strong id="humidity">--%</strong>
+          <div class="meter"><span id="humidityMeter"></span></div>
+          <small id="humidityStatus">Moisture in the air</small>
+        </article>
+        <article class="metric">
+          <div class="metric-head"><span>Wind</span><i class="fa-solid fa-wind"></i></div>
+          <strong id="windSpeed">-- <small>km/h</small></strong>
+          <small id="windDir">--</small>
+        </article>
+        <article class="metric">
+          <div class="metric-head"><span>Chance of rain</span><i class="fa-solid fa-cloud-rain"></i></div>
+          <strong id="rainChance">--%</strong>
+          <div class="meter"><span id="rainMeter"></span></div>
+          <small id="rainHint">Precipitation probability</small>
+        </article>
+        <article class="metric">
+          <div class="metric-head"><span>UV index</span><i class="fa-solid fa-sun"></i></div>
+          <strong id="uvIndex">--</strong>
+          <small id="uvStatus">UV exposure</small>
+        </article>
+        <article class="metric">
+          <div class="metric-head"><span>Visibility</span><i class="fa-solid fa-eye"></i></div>
+          <strong id="visibility">-- <small>km</small></strong>
+          <small id="visibilityStatus">Viewing distance</small>
+        </article>
+        <article class="metric">
+          <div class="metric-head"><span>Air quality</span><i class="fa-solid fa-leaf"></i></div>
+          <strong id="airQuality">--</strong>
+          <small id="airQualityStatus">US EPA index</small>
+        </article>
+        <article class="metric">
+          <div class="metric-head"><span>Pressure</span><i class="fa-solid fa-gauge-high"></i></div>
+          <strong id="pressure">-- <small>hPa</small></strong>
+          <small id="cloudsStatus">Pressure at location</small>
+        </article>
+      </section>
+
+      <!-- ADVICE -->
+      <section class="advice-panel">
+        <div class="advice-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <div>
+          <span class="eyebrow">WEATHER INSIGHT</span>
+          <h2 id="adviceTitle">A little heads‑up</h2>
+          <p id="weatherAdvice">Your personalized weather tips will appear here.</p>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <span>Weatherly <span class="footer-dot">·</span> Made for your everyday forecast</span>
+      <span>Weather data updates when you search or refresh.</span>
+    </footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
